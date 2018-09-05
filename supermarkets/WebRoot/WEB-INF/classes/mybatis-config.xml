@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<!-- 通过这个配置文件完成mybatis与数据库的连接 -->
+ <configuration>
+<!--   	<properties>
+		<property name="driver" value="com.mysql.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://127.0.0.1:3306/smbms"/>
+		<property name="user" value="root"/>
+		<property name="password" value="root"/>
+	</properties>	 -->
+	
+	<!-- 用户改变Mbbatis运行中的行为 --> 
+	<!-- <settings>
+		<setting name="logImpl" value="LOG4J" />
+	</settings> 
+	 -->
+	<!-- 配置类型别名 通过Mybatis的sql映射文件相关联 -->
+ 	<typeAliases>
+		<package name="cn.smbms.pojo"/>
+	</typeAliases>
+	
+	
+	<!-- <environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC"></transactionManager>
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}"/>
+				<property name="url" value="${url}"/>
+				<property name="username" value="${user}"/>
+				<property name="password" value="${password}"/>
+			</dataSource>
+		</environment>
+	</environments>
+	
+	
+	<mappers>
+		<mapper resource="cn/smbms/dao/user/UserMapper.xml"/>
+	</mappers> -->
+</configuration>

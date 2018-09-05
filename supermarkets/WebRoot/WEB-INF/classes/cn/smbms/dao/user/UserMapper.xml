@@ -1,0 +1,115 @@
+<?xml version ="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.smbms.dao.user.UserMapper">
+
+	<!--查询用户列表(参数：对象入参) -->
+	<!-- <select id="getUserList" resultMap="userList" parameterType="cn.smbms.pojo.User">
+		select u.*,r.roleName from smbms_user u,smbms_role r
+		where u.userCode
+		like CONCAT ('%',#{userCode},'%')
+		and u.userPassword = #{userPassword} and
+		u.userRole = r.id
+	</select> -->
+	
+	<select id="getUserImg" resultType="cn.smbms.pojo.User">
+		select id,userCode,userName,gender,birthday,phone,address,userPassword,idPicPath,userRole,idPicPath,workPicPath from smbms_user  where id = #{id}
+	</select>	
+
+	<!--当数据库中的字段信息与对象的属性不一致时需要通过resultMap来映射 -->
+	<resultMap type="cn.smbms.pojo.User" id="userList">
+		<result property="id" column="id" />
+		<result property="userCode" column="userCode" />
+		<result property="userName" column="userName" />
+		<result property="phone" column="phone" />
+		<result property="birthday" column="birthday" />
+		<result property="gender" column="gender" />
+		<result property="userRole" column="userRole" />
+		<result property="userRoleName" column="roleName" />
+		<result property="idPicPath" column="idPicPath" />
+	</resultMap>
+
+
+	<!--增加用户 -->
+	<insert id="useradd" parameterType="cn.smbms.pojo.User">
+		insert into smbms_user
+		(userCode,userName,userPassword,gender,birthday,phone,address,userRole,createdBy,creationDate,idPicPath,workPicPath)
+		values (#{userCode},#{userName},#{userPassword},#{gender},
+		#{birthday},#{phone},#{address},#{userRole},
+		#{createdBy},#{creationDate},#{idPicPath},#{workPicPath})
+	</insert>
+	
+	
+	
+	<!-- 登录验证 -->
+	<select id="getLoginUser" resultType="cn.smbms.pojo.User">
+		select * from smbms_user u 
+		<trim prefix="where" prefixOverrides="and | or">
+			<if test="userCode != null">
+				and u.userCode = #{userCode}
+			</if>
+		</trim>
+	</select>	
+	
+	<!-- 获取list列表 -->
+	<select id="getUserList" resultMap="userList">
+		select u.*,r.roleName from smbms_user u,smbms_role r where u.userRole = r.id
+		<if test="userRole != null">
+			and u.userRole = #{userRole}
+		</if>
+		<if test="userName != null and userName != ''">
+			and u.userName like CONCAT ('%',#{userName},'%') 
+		</if>
+		order by creationDate DESC limit #{from},#{pageSize}
+	</select>	
+
+    <!-- 查询总记录数 -->
+	<select id="getUserCount" resultType="Int">
+		select count(1) as count from smbms_user u,smbms_role r where u.userRole = r.id
+		<if test="userRole != null">
+			and u.userRole = #{userRole}
+		</if>
+		<if test="userName != null and userName != ''">
+			and u.userName like CONCAT ('%',#{userName},'%') 
+		</if>
+	</select>
+	
+	<!-- 登录 -->
+	<select id="getLogin" resultType="cn.smbms.pojo.User" parameterType="cn.smbms.pojo.User">
+	   SELECT * FROM smbms_user WHERE userCode=#{userCode} AND userPassword=#{userPassword}
+	</select>
+	
+	<!-- 修改 -->
+	<update id="getUpdateUser" parameterType="cn.smbms.pojo.User"> 
+      UPDATE smbms_user set userName=#{userName},gender=#{gender},birthday=#{birthday},phone=#{phone},address=#{address}
+      where id=#{id}
+    </update>
+    
+    <delete id="getIdDelete" parameterType="cn.smbms.pojo.User">
+         DELETE FROM smbms_user WHERE id=#{id}
+    </delete>
+    
+    <!--增加文件路径 -->
+	<insert id="pathLoadAdd" parameterType="cn.smbms.pojo.UploadFile">
+		INSERT INTO upload (userid,realfilename,savefilename,filesize,uploadPerson,uploadDate,fileType)
+        VALUES(#{userid},#{realfilename},#{savefilename},#{filesize},#{uploadPerson},#{uploadDate},#{fileType})
+	</insert>
+	
+	<!--密码 修改 -->
+	<update id="getPwdUser" parameterType="cn.smbms.pojo.User"> 
+     UPDATE  smbms_user SET userPassword =#{userPassword} WHERE id=#{id}
+    </update>
+    
+    <!-- 查询密码 -->
+    <select id="getPwd" resultType="cn.smbms.pojo.User">
+       SELECT userPassword FROM smbms_user WHERE id=#{id}
+    </select> 
+    
+    <!-- 查询role表 -->
+    <select id="getRole" resultType="cn.smbms.pojo.Role">
+      SELECT * FROM smbms_role
+    </select>
+    
+    
+
+</mapper>

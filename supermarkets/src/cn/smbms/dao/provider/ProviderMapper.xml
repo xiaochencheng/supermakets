@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.smbms.dao.provider.ProviderDao">
+   
+   <insert id="add" parameterType="cn.smbms.pojo.Provider">
+      INSERT INTO smbms_provider (proCode,proName,proDesc,proContact,proPhone,proAddress,proFax)
+      VALUES (#{proCode},#{proName},#{proDesc},#{proContact},#{proPhone},#{proAddress},#{proFax})
+   </insert>
+   
+   
+    <!-- 查询总记录数 -->
+	<select id="getProront" resultType="Int">
+	    SELECT * FROM smbms_provider p,smbms_bill b WHERE b.providerId=p.id
+		<if test="proCode != null">
+			 AND p.proCode=#{proCode} 
+		</if>
+		<if test="proName != null and proName != ''">
+			AND p.proName LIKE CONCAT('%',#{proName},'%')
+		</if>
+	</select>
+	
+	<!-- 获取list列表 -->
+	<select id="getUserList" resultMap="userList">
+		 SELECT * FROM smbms_provider p,smbms_bill b WHERE b.providerId=p.id
+		<if test="proCode != null">
+			 AND p.proCode=#{proCode} 
+		</if>
+		<if test="proName != null and proName != ''">
+			AND p.proName LIKE CONCAT('%',#{proName},'%')
+		</if>
+	</select>	
+	<!--当数据库中的字段信息与对象的属性不一致时需要通过resultMap来映射 -->
+	<resultMap type="cn.smbms.pojo.Provider" id="userList">
+		<result property="id" column="id" />
+		<result property="proCode" column="proCode" />
+		<result property="proName" column="proName" />
+		<result property="proDesc" column="proDesc" />
+		<result property="proContact" column="proContact" />
+		<result property="proPhone" column="proPhone" />
+		<result property="proAddress" column="proAddress" />
+		<result property="proFax" column="proFax" />
+		<result property="creationDate" column="creationDate" />
+	</resultMap>
+	
+	<!-- 根据id查询 -->
+	<select id="getId" resultType="cn.smbms.pojo.Provider">
+	  SELECT * FROM smbms_provider WHERE id=#{id}
+	</select>
+	
+	<!-- 修改 -->
+	<update id="getUpdatPro">
+	 UPDATE smbms_provider  SET proCode =#{proCode} ,proName= #{proName},proContact=#{proContact},
+     proPhone=#{proPhone},proFax=#{proFax},proAddress=#{proAddress},proDesc=#{proDesc} WHERE id=#{id}
+	</update>
+	
+	<!-- 删除 -->
+	<delete id="getIdDelete">
+	   DELETE FROM smbms_provider WHERE id=#{id}
+	</delete>
+   
+</mapper>

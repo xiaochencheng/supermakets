@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.smbms.dao.bill.BillMapper">
+   
+     <!-- 获取list列表 -->
+	<select id="getBillList" resultMap="userList" parameterType="cn.smbms.pojo.Bill">
+  SELECT b.* ,p.proName  FROM smbms_bill b,smbms_provider p WHERE b.providerId=p.id 
+		<if test="providerId != null">
+			AND   b.providerId=#{providerId}  
+		</if>
+		<if test="proName != null and proName != ''">
+			AND p.proName LIKE CONCAT('%',#{proName},'%')
+		</if>
+		<if test="isPayment != null and isPayment != ''">
+			 AND isPayment=#{isPayment}
+		</if>
+	</select>	
+	<!--当数据库中的字段信息与对象的属性不一致时需要通过resultMap来映射 -->
+	<resultMap type="cn.smbms.pojo.Bill" id="userList">
+		<result property="id" column="id" />
+		<result property="billCode" column="billCode" />
+		<result property="productName" column="productName" />
+		<result property="productDesc" column="productDesc" />
+		<result property="productUnit" column="productUnit" />
+		<result property="productCount" column="productCount" />
+		<result property="totalPrice" column="totalPrice" />
+		<result property="isPayment" column="isPayment" />
+		<result property="providerId" column="providerId" />
+		<result property="createdBy" column="createdBy" />
+		<result property="creationDate" column="creationDate" />
+		<result property="modifyBy" column="modifyBy" />
+		<result property="modifyDate" column="modifyDate" />
+	 	 <result property="proName" column="proName"/>
+       <!--  <association property="proNames" javaType="cn.smbms.pojo.Provider">
+		  <result property="proName" column="proName"/>
+		</association> -->
+	</resultMap>
+	
+	<!-- 查看 -->
+    <select id="getBill" resultType="cn.smbms.pojo.Bill">
+	  SELECT * FROM smbms_bill WHERE id=#{id}
+	</select>
+	
+	<!-- 供应商下拉框 -->
+	 <select id="getProviders" resultType="cn.smbms.pojo.Provider">
+	  SELECT * FROM smbms_provider 
+	</select> 
+	
+	<!-- 修改 -->
+	<update id="getBillUpdate">
+	  UPDATE  smbms_bill SET billCode =#{billCode},productName=#{productName},productUnit=#{productUnit}
+	  ,productCount=#{productCount},totalPrice=#{totalPrice} WHERE id=#{id}
+	</update>
+	
+	<!-- 修改供应商表 -->
+    <update id="getProUpdate">
+     UPDATE smbms_provider SET proName=#{proName} WHERE id=#{id}
+    </update>
+    
+    <!-- 删除 -->
+    <delete id="getIdBill">
+      DELETE FROM smbms_bill WHERE id=#{id}
+    </delete>
+    
+    <!-- 添加 -->
+    <insert id="getBillAdd">
+        INSERT INTO smbms_bill (billCode,productName,productUnit,productCount,totalPrice)
+        VALUES (#{billCode},#{productName},#{productUnit},#{productCount},#{totalPrice})
+    </insert>
+   
+   
+</mapper>
